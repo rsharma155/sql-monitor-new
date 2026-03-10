@@ -6,10 +6,18 @@ servers:
         host: localhost
         port: 1433
         user: sa
+        password: YourStrongPassword123!
+        options:
+          encrypt: false
+          trustServerCertificate: true
       - name: DEV-SQL-01
         host: localhost
         port: 1433
         user: sa
+        password: YourStrongPassword123!
+        options:
+          encrypt: false
+          trustServerCertificate: true
   - type: postgres
     label: PostgreSQL
     instances:
@@ -17,3 +25,4 @@ servers:
         host: localhost
         port: 5432
         user: postgres
+        password: YourStrongPassword123!

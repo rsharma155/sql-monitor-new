@@ -105,7 +105,7 @@ app.get('/api/databases', async (req, res) => {
     return res.status(404).json({ error: "Instance not found in config" });
   }
 
-  const password = getDbPassword(instConfig.name);
+  const password = instConfig.password || getDbPassword(instConfig.name);
 
   try {
     let databases: string[] = [];
@@ -116,7 +116,10 @@ app.get('/api/databases', async (req, res) => {
         password: password,
         server: instConfig.host,
         port: instConfig.port,
-        options: { encrypt: false, trustServerCertificate: true },
+        options: { 
+          encrypt: instConfig.options?.encrypt ?? false, 
+          trustServerCertificate: instConfig.options?.trustServerCertificate ?? true 
+        },
         connectionTimeout: 3000
       });
 
@@ -160,7 +163,7 @@ app.get('/api/metrics', async (req, res) => {
     return res.status(404).json({ error: "Instance not found in config" });
   }
 
-  const password = getDbPassword(instConfig.name);
+  const password = instConfig.password || getDbPassword(instConfig.name);
 
   try {
     let metrics = {
@@ -182,7 +185,10 @@ app.get('/api/metrics', async (req, res) => {
         server: instConfig.host,
         port: instConfig.port,
         database: database as string || 'master',
-        options: { encrypt: false, trustServerCertificate: true },
+        options: { 
+          encrypt: instConfig.options?.encrypt ?? false, 
+          trustServerCertificate: instConfig.options?.trustServerCertificate ?? true 
+        },
         connectionTimeout: 3000 // Fast timeout for preview
       });
 
@@ -261,7 +267,7 @@ app.get('/api/top-queries', async (req, res) => {
     return res.status(404).json({ error: "Instance not found in config" });
   }
 
-  const password = getDbPassword(instConfig.name);
+  const password = instConfig.password || getDbPassword(instConfig.name);
 
   try {
     let queries = [];
@@ -273,7 +279,10 @@ app.get('/api/top-queries', async (req, res) => {
         server: instConfig.host,
         port: instConfig.port,
         database: database as string || 'master',
-        options: { encrypt: false, trustServerCertificate: true },
+        options: { 
+          encrypt: instConfig.options?.encrypt ?? false, 
+          trustServerCertificate: instConfig.options?.trustServerCertificate ?? true 
+        },
         connectionTimeout: 3000
       });
 
