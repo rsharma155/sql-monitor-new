@@ -22,7 +22,6 @@ type ServerConfig = {
   label: string;
   instances: {
     name: string;
-    databases: string[];
   }[];
 };
 
@@ -32,6 +31,7 @@ export default function App() {
   const [selectedType, setSelectedType] = useState<string>("");
   const [selectedInstance, setSelectedInstance] = useState<string>("");
   const [selectedDatabase, setSelectedDatabase] = useState<string>("");
+  const [databases, setDatabases] = useState<string[]>([]);
 
   useEffect(() => {
     fetch('/config.yaml')
@@ -47,9 +47,6 @@ export default function App() {
               if (firstType.instances.length > 0) {
                 const firstInst = firstType.instances[0];
                 setSelectedInstance(firstInst.name);
-                if (firstInst.databases.length > 0) {
-                  setSelectedDatabase(firstInst.databases[0]);
-                }
               }
             }
           }
@@ -59,8 +56,32 @@ export default function App() {
       });
   }, []);
 
+  useEffect(() => {
+    if (selectedType && selectedInstance) {
+      fetch(`/api/databases?type=${selectedType}&instance=${selectedInstance}`)
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            setDatabases(data);
+            if (data.length > 0 && !data.includes(selectedDatabase)) {
+              setSelectedDatabase(data[0]);
+            } else if (data.length === 0) {
+              setSelectedDatabase("");
+            }
+          }
+        })
+        .catch(err => {
+          console.error("Failed to fetch databases", err);
+          setDatabases([]);
+          setSelectedDatabase("");
+        });
+    } else {
+      setDatabases([]);
+      setSelectedDatabase("");
+    }
+  }, [selectedType, selectedInstance]);
+
   const currentTypeObj = config.find(c => c.type === selectedType);
-  const currentInstObj = currentTypeObj?.instances.find(i => i.name === selectedInstance);
 
   const handleTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const t = e.target.value;
@@ -69,22 +90,13 @@ export default function App() {
     if (typeObj && typeObj.instances.length > 0) {
       const inst = typeObj.instances[0];
       setSelectedInstance(inst.name);
-      setSelectedDatabase(inst.databases[0] || "");
     } else {
       setSelectedInstance("");
-      setSelectedDatabase("");
     }
   };
 
   const handleInstanceChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const instName = e.target.value;
-    setSelectedInstance(instName);
-    const instObj = currentTypeObj?.instances.find(i => i.name === instName);
-    if (instObj && instObj.databases.length > 0) {
-      setSelectedDatabase(instObj.databases[0]);
-    } else {
-      setSelectedDatabase("");
-    }
+    setSelectedInstance(e.target.value);
   };
 
   return (
@@ -165,8 +177,9 @@ export default function App() {
                 value={selectedDatabase} 
                 onChange={(e) => setSelectedDatabase(e.target.value)}
                 className="bg-[var(--color-background)] border border-[var(--color-border)] rounded-md px-2 py-1 text-sm focus:outline-none focus:border-[var(--color-accent)]"
+                disabled={databases.length === 0}
               >
-                {currentInstObj?.databases.map(d => (
+                {databases.map(d => (
                   <option key={d} value={d}>{d}</option>
                 ))}
               </select>

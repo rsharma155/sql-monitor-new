@@ -6,17 +6,10 @@ servers:
         host: localhost
         port: 1433
         user: sa
-        databases:
-          - master
-          - SalesDB
-          - HR_Data
       - name: DEV-SQL-01
         host: localhost
         port: 1433
         user: sa
-        databases:
-          - master
-          - TestDB
   - type: postgres
     label: PostgreSQL
     instances:
@@ -24,7 +17,3 @@ servers:
         host: localhost
         port: 5432
         user: postgres
-        databases:
-          - postgres
-          - app_db
-          - analytics
