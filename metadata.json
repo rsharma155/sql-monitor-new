@@ -1,0 +1,5 @@
+{
+  "name": "SQL Server Monitor",
+  "description": "A SQL Server monitoring dashboard inspired by Redgate Monitor, integrating with Prometheus and providing DMV scripts.",
+  "requestFramePermissions": []
+}
