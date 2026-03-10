@@ -115,6 +115,7 @@ The app will now be running efficiently on port 3000.
 
 ## ❓ Troubleshooting
 
+- **"'tsx' is not recognized..."**: This error happens if the background packages haven't been installed yet. Make sure you run `npm install` in your terminal first before running `npm run dev`.
 - **"npm is not recognized"**: You need to install Node.js (see Prerequisites) or restart your terminal.
 - **"Instance not found" or Database Connection Errors**: Double-check your `config.yaml` file. Ensure the host, port, username, and password are correct, and that your database server allows external connections.
 - **Port 3000 is already in use**: If another app is using port 3000, you'll need to stop that app first.
